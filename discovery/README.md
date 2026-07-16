@@ -61,28 +61,34 @@ correção parcial de rotas feita no PR #367.
 Ao acessar uma URL inválida no site em produção
 (`queridodiario.ok.org.br/pagina-que-nao-existe-123`), a página carrega em
 branco, exibindo apenas o menu de navegação e o rodapé — sem nenhum
-conteúdo central ou mensagem informando o erro (ver `evidencias/producao-tela-branco.png`).
+conteúdo central ou mensagem informando o erro.
+
+![Tela em branco em produção](./evidencias/producao-tela-branco.png)
 
 ### 3.2 Confirmação técnica via DevTools (Network)
 
 A aba Network do navegador confirma que a requisição do documento HTML
 retorna **status 200 OK**, mesmo a URL sendo inválida — a evidência técnica
-do "soft 404" (ver `evidencias/producao-status-200.png`).
+do "soft 404".
 
-### 3.3 Ausência da meta tag robots em produção
+![Status 200 no DevTools](./evidencias/producao-status-200.png)
 
-Inspecionando o `<head>` da página em produção, confirma-se que não existe
-nenhuma tag `<meta name="robots" content="noindex, nofollow">`, ou seja,
-não há qualquer sinalização para os buscadores não indexarem essa URL
-inválida.
+### 3.3 Comportamento após a correção (ambiente local)
 
-### 3.4 Comportamento após a correção (ambiente local)
+Após a implementação da correção (branch `fix/pagina-404-soft-404`, já
+mesclada em `main`), a mesma URL inválida passa a exibir uma página 404
+customizada, com mensagem clara e botão de retorno à página inicial.
 
-Após a implementação da correção (branch `fix/pagina-404-soft-404`), a
-mesma URL inválida passa a exibir uma página 404 customizada, com
-mensagem clara e botão de retorno à página inicial, além da meta tag
-`robots noindex, nofollow` presente no `<head>` (ver
-`evidencias/local-pagina-404.png` e `evidencias/local-meta-tag.png`).
+![Página 404 customizada local](./evidencias/local-pagina-404.png)
+
+### 3.4 Confirmação da meta tag robots (ambiente local)
+
+Inspecionando o `<head>` da página 404 local, confirma-se a presença da
+tag `<meta name="robots" content="noindex, nofollow">`, aplicada
+dinamicamente via Angular `Meta` service — sinalizando corretamente aos
+buscadores para não indexar essa URL inválida.
+
+![Meta tag robots aplicada](./evidencias/local-meta-tag.png)
 
 ### 3.5 Issues e PRs relacionados
 - Issue #258 (fechada, sem implementação): primeira menção ao problema
