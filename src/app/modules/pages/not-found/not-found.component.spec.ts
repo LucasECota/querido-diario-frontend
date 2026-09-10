@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Meta, Title } from '@angular/platform-browser';
-import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { ContainerComponent } from '../../layout/container/container.component';
 import { NotFoundComponent } from './not-found.component';
 
 describe('NotFoundComponent', () => {
@@ -10,11 +10,10 @@ describe('NotFoundComponent', () => {
   let fixture: ComponentFixture<NotFoundComponent>;
   let meta: Meta;
   let title: Title;
-  let router: Router;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NotFoundComponent],
+      declarations: [NotFoundComponent, ContainerComponent],
       imports: [RouterTestingModule],
       providers: [Meta, Title]
     }).compileComponents();
@@ -23,7 +22,6 @@ describe('NotFoundComponent', () => {
     component = fixture.componentInstance;
     meta = TestBed.inject(Meta);
     title = TestBed.inject(Title);
-    router = TestBed.inject(Router);
   });
 
   // Cenário 1: componente é criado com sucesso
@@ -46,23 +44,22 @@ describe('NotFoundComponent', () => {
     expect(title.getTitle()).toBe('Página não encontrada - Querido Diário');
   });
 
-  // Cenário 4: botão navega para a home ao ser clicado
-  it('deve navegar para a rota inicial ao clicar no botão', () => {
+  // Cenário 4: link para a home é exibido
+  it('deve exibir um link para a página inicial', () => {
     fixture.detectChanges();
-    const navigateSpy = spyOn(router, 'navigate');
 
-    const button = fixture.nativeElement.querySelector('button');
-    button.click();
+    const link = fixture.nativeElement.querySelector('a') as HTMLAnchorElement;
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/']);
+    expect(link.getAttribute('href')).toBe('/');
+    expect(link.textContent).toContain('Ir para a página inicial');
   });
 
   // Cenário 5: conteúdo textual esperado aparece no template
-  it('deve exibir o texto "404" e a mensagem de erro', () => {
+  it('deve exibir o título e a mensagem de página indisponível', () => {
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.querySelector('h1')?.textContent).toContain('404');
-    expect(compiled.textContent).toContain('não existe ou foi movida');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Página não encontrada');
+    expect(compiled.textContent).toContain('A página que você está procurando não está disponível.');
   });
 });
